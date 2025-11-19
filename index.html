@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Darwin IT Mate | Local IT Help & Cyber Safety in Darwin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta
+    name="description"
+    content="Darwin IT Mate offers affordable IT support, setup help and basic cyber safety checks for families, students and small businesses in Darwin. Priced at roughly one-third of usual market IT rates."
+  />
+<style>
+:root {
+  --primary: #22d3ee;
+  --text-dark: #0f172a;
+  --text-muted: #6b7280;
+  --border-soft: rgba(148, 163, 184, 0.4);
+  --max-width: 1040px;
+}
+
+/* 全局 -------------------------------------------------------*/
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100%;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: var(--text-dark);
+  line-height: 1.7;
+  -webkit-font-smoothing: antialiased;
+  background: #020617;
+
+  /* 一屏一屏的翻页效果 */
+  scroll-snap-type: y mandatory;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: none;
+}
+
+/* 每一屏 PAGE ------------------------------------------------*/
+.page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.shell {
+  width: 100%;
+  max-width: var(--max-width);
+  padding: 22px 18px 40px;
+}
+
+/* 背景色 */
+#home-wrapper      { background: #020617; }
+#services-wrapper  { background: #022c22; }
+#contact-wrapper   { background: #020617; }
+
+/* 导航 -------------------------------------------------------*/
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+#home-wrapper .nav,
+#services-wrapper .nav {
+  color: #e5e7eb;
+}
+#contact-wrapper .nav {
+  color: #f9fafb;
+}
+
+.brand { display: flex; align-items: center; gap: 10px; }
+
+.brand-logo {
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 30% 0%, #a5f3fc 0, #22d3ee 40%, #06b6d4 100%);
+  color: #020617;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  font-size: 15px;
+  box-shadow: 0 6px 16px rgba(15, 23, 42, 0.55);
+}
+
+.brand-text-main { font-size: 19px; font-weight: 650; }
+.brand-text-sub  { font-size: 13px; color: #9ca3c7; }
+#contact-wrapper .brand-text-sub { color: #cbd5f5; }
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 14px;
+}
+
+#home-wrapper .nav-links,
+#services-wrapper .nav-links {
+  color: #cbd5f5;
+}
+#home-wrapper .nav-links a,
+#services-wrapper .nav-links a {
+  color: #cbd5f5;
+}
+#contact-wrapper .nav-links {
+  color: #f9fafb;
+}
+#contact-wrapper .nav-links a {
+  color: #f9fafb;
+}
+
+.nav-links a {
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-decoration: none;
+}
+
+#home-wrapper .nav-links a:hover,
+#services-wrapper .nav-links a:hover {
+  background: rgba(148, 163, 184, 0.18);
+  color: #f9fafb;
+}
+#contact-wrapper .nav-links a:hover {
+  background: rgba(148, 163, 184, 0.3);
+}
+
+.nav-cta,
+.btn-primary {
+  padding: 9px 16px;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  background: var(--primary);
+  color: #022c22;
+  font-size: 14px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* 公共 section ------------------------------------------------*/
+.section-full {
+  min-height: calc(100vh - 60px);
+  display: flex;
+  align-items: center;
+}
+
+.section-inner {
+  width: 100%;
+  padding: 32px 0 24px;
+}
+
+/* 页面顶部大标题（HOME / SERVICES / CONTACT） */
+.page-title {
+  font-size: 26px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-bottom: 18px;
+}
+
+#home-wrapper  .page-title { color: #f9fafb; }
+#services-wrapper .page-title { color: #e5e7eb; }
+#contact-wrapper  .page-title { color: #e5e7eb; }
+
+/* 淡入动画：进入视口时触发 -------------------------------*/
+.fade-section {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-section.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* HOME / HERO ------------------------------------------------*/
+.hero-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+  gap: 40px;
+}
+@media (max-width: 840px) {
+  .hero-layout { grid-template-columns: minmax(0, 1fr); }
+}
+
+#home-wrapper .shell { color: #e5e7eb; }
+
+.hero-title {
+  font-size: clamp(30px, 3.8vw, 40px);
+  font-weight: 750;
+  margin-bottom: 14px;
+  letter-spacing: -0.02em;
+}
+.hero-title span { color: var(--primary); }
+
+.hero-subtitle {
+  font-size: 15px;
+  color: #cbd5f5;
+  max-width: 580px;
+  margin-bottom: 22px;
+}
+
+.hero-subtitle strong { color: #e5e7eb; }
+
+.hero-actions { margin-bottom: 16px; }
+
+.hero-footnote {
+  font-size: 13px;
+  color: #9ca3c7;
+  padding-top: 12px;
+  border-top: 1px solid rgba(148, 163, 184, 0.5);
+  max-width: 600px;
+}
+
+/* Right column info */
+.hero-side-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.hero-side-text {
+  font-size: 14px;
+  color: #cbd5f5;
+  margin-bottom: 14px;
+}
+.hero-side-list {
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* SERVICES ---------------------------------------------------*/
+#services-wrapper .shell { color: #e5e7eb; }
+#services-wrapper .section-subtitle{ font-size: 16px; }
+
+.section-heading { margin-bottom: 24px; }
+.section-title   { font-size: 22px; font-weight: 650; }
+.section-subtitle{
+  font-size: 15px;
+  color: #cbd5f5;
+  margin-top: 6px;
+}
+
+.card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 48px;
+}
+@media (max-width: 720px) {
+  .card-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+.service-block {
+  padding: 18px 20px 20px;
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.45);
+  background: rgba(15, 23, 42, 0.92);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.6);
+}
+
+.service-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.service-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #e5e7eb;
+}
+
+.service-tag {
+  font-size: 12px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(45, 212, 191, 0.17);
+  color: #6ee7b7;
+  white-space: nowrap;
+}
+
+.service-desc {
+  font-size: 15px;
+  color: #cbd5f5;
+  margin: 8px 0 10px;
+}
+
+.service-list {
+  list-style: none;
+  padding-left: 0;
+  margin-bottom: 10px;
+}
+.service-list li {
+  position: relative;
+  padding-left: 18px;
+  margin-bottom: 5px;
+  font-size: 15px;
+  color: #e5e7eb;
+}
+.service-list li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #6ee7b7;
+  position: absolute;
+  left: 3px;
+  top: 9px;
+}
+
+.service-price-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-top: 8px;
+}
+.service-price { font-weight: 600; color: #6ee7b7; }
+.service-note  { font-size: 13px; color: #9ca3c7; }
+
+/* CONTACT ----------------------------------------------------*/
+#contact-wrapper .shell { color: #f9fafb; }
+
+.contact-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+  gap: 32px;
+}
+@media (max-width: 720px) {
+  .contact-layout { grid-template-columns: minmax(0, 1fr); }
+}
+
+.contact-info { font-size: 14px; }
+.contact-info p {
+  margin-bottom: 14px;
+  color: #e5e7eb;
+}
+
+.contact-lines { margin-bottom: 12px; font-size: 14px; }
+.contact-lines div { margin-bottom: 5px; }
+
+.field-input,
+.field-textarea {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border-soft);
+  background: #ffffff;
+  padding: 9px 11px;
+  font-size: 14px;
+}
+.field-textarea { min-height: 110px; resize: vertical; }
+
+.field-group { margin-bottom: 12px; }
+.field-label {
+  font-size: 13px;
+  color: #111827;
+  margin-bottom: 4px;
+  display: block;
+}
+
+.footer {
+  margin-top: 32px;
+  font-size: 12px;
+  color: #9ca3c7;
+}
+</style>
+</head>
+
+<body>
+
+<!-- HOME ----------------------------------------------------->
+<div id="home-wrapper" class="page">
+  <main class="shell">
+    <header class="nav">
+      <div class="brand">
+        <div class="brand-logo">IT</div>
+        <div>
+          <div class="brand-text-main">Darwin IT Mate</div>
+          <div class="brand-text-sub">
+            Local IT & cyber help · by Joseph
+          </div>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="#home-wrapper">Home</a>
+        <a href="#services-wrapper">Services</a>
+        <a href="#contact-wrapper">Contact</a>
+        <button class="nav-cta" onclick="document.getElementById('contact-wrapper').scrollIntoView({behavior:'smooth'})">
+          Book
+        </button>
+      </div>
+    </header>
+
+    <section class="section-full fade-section" id="home-section">
+      <div class="section-inner">
+        <div class="page-title">HOME</div>
+
+        <div class="hero-layout">
+          <div>
+            <h1 class="hero-title">
+              Friendly <span>IT help</span> & basic cyber safety in Darwin.
+            </h1>
+            <p class="hero-subtitle">
+              I’m <strong>Joseph Chou</strong>, running <strong>Darwin IT Mate (darwinITmate)</strong>.
+              I provide affordable IT support, device & Wi-Fi setup, and simple cyber-safety checks
+              for families, students and small businesses — in clear English or Chinese.
+            </p>
+            <div class="hero-actions">
+              <button class="btn-primary" onclick="document.getElementById('contact-wrapper').scrollIntoView({behavior:'smooth'})">
+                Get a quote →
+              </button>
+            </div>
+            <p class="hero-footnote">
+              My labour rates are kept at roughly <strong>one-third of typical IT service prices in Darwin</strong>,
+              to support local community and small business owners while I build my long-term IT career here.
+            </p>
+          </div>
+
+          <aside>
+            <h3 class="hero-side-title">Who this is for</h3>
+            <p class="hero-side-text">
+              People who just want their computers, networks and accounts to work safely — without complicated technical language.
+            </p>
+            <div class="hero-side-list">
+              <div><strong>Phone:</strong> 0466 658 664</div>
+              <div><strong>Email:</strong> zzf0413@outlook.com</div>
+              <div><strong>Location:</strong> Darwin, NT</div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- SERVICES ------------------------------------------------->
+<div id="services-wrapper" class="page">
+  <main class="shell">
+    <header class="nav">
+      <div class="brand">
+        <div class="brand-logo">IT</div>
+        <div>
+          <div class="brand-text-main">Darwin IT Mate</div>
+          <div class="brand-text-sub">Affordable local IT help · by Joseph</div>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="#home-wrapper">Home</a>
+        <a href="#services-wrapper">Services</a>
+        <a href="#contact-wrapper">Contact</a>
+        <button class="nav-cta" onclick="document.getElementById('contact-wrapper').scrollIntoView({behavior:'smooth'})">
+          Book
+        </button>
+      </div>
+    </header>
+
+    <section class="section-full fade-section">
+      <div class="section-inner">
+        <div class="page-title">SERVICES</div>
+
+        <div class="section-heading">
+          <h2 class="section-title">What I can help with</h2>
+          <p class="section-subtitle">
+            Simple, honest IT services in Darwin — priced at roughly one-third of usual local IT rates.
+          </p>
+        </div>
+
+        <div class="card-grid">
+          <!-- Block 1 -->
+          <div class="service-block">
+            <div class="service-header">
+              <h3 class="service-title">On-site & Remote IT Support</h3>
+              <span class="service-tag">Home & small business</span>
+            </div>
+            <p class="service-desc">
+              Help with slow computers, small office networks, Wi-Fi problems and common software issues.
+            </p>
+            <ul class="service-list">
+              <li>Troubleshooting Windows & basic Mac issues</li>
+              <li>Wi-Fi coverage, router and printer problems</li>
+              <li>Simple backup & basic maintenance advice</li>
+            </ul>
+            <div class="service-price-row">
+              <span class="service-price">Labour from A$40 / first hour</span>
+              <span class="service-note">Around one-third of typical support call-out fees</span>
+            </div>
+          </div>
+
+          <!-- Block 2 -->
+          <div class="service-block">
+            <div class="service-header">
+              <h3 class="service-title">Device & Network Setup</h3>
+              <span class="service-tag">Move-in / new gear</span>
+            </div>
+            <p class="service-desc">
+              Get your new or existing devices correctly set up for daily use at home or in a small office.
+            </p>
+            <ul class="service-list">
+              <li>New PC / laptop initial setup, user accounts & updates</li>
+              <li>Wi-Fi router, basic network and printer setup</li>
+              <li>Chinese input, browsers, email and cloud storage</li>
+            </ul>
+            <div class="service-price-row">
+              <span class="service-price">From A$30–A$50 per visit</span>
+              <span class="service-note">Simple jobs only, about 1 hour · ~1/3 usual local rate</span>
+            </div>
+          </div>
+
+          <!-- Block 3 -->
+          <div class="service-block">
+            <div class="service-header">
+              <h3 class="service-title">Security & Backup Check</h3>
+              <span class="service-tag">Cyber-safety</span>
+            </div>
+            <p class="service-desc">
+              A light, practical safety review for your main devices, Wi-Fi and small-business data.
+            </p>
+            <ul class="service-list">
+              <li>Check updates, antivirus and risky software</li>
+              <li>Review Wi-Fi password and router basics</li>
+              <li>Look at backup options for important data</li>
+            </ul>
+            <div class="service-price-row">
+              <span class="service-price">From A$60</span>
+              <span class="service-note">Normally 1–1.5 hours · kept at ~1/3 market pricing</span>
+            </div>
+          </div>
+
+          <!-- Block 4 -->
+          <div class="service-block">
+            <div class="service-header">
+              <h3 class="service-title">Website, Email & Cloud Setup</h3>
+              <span class="service-tag">For small business</span>
+            </div>
+            <p class="service-desc">
+              Basic technical setup so small businesses can be contacted online and work more safely.
+            </p>
+            <ul class="service-list">
+              <li>Help connect a simple website or landing page</li>
+              <li>Business email, cloud file storage & shared folders</li>
+              <li>Account structure with 2FA and basic access rules</li>
+            </ul>
+            <div class="service-price-row">
+              <span class="service-price">From A$80 for basic setup</span>
+              <span class="service-note">Tech labour only · priced around 1/3 of typical IT fees</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- CONTACT -------------------------------------------------->
+<div id="contact-wrapper" class="page">
+  <main class="shell">
+    <header class="nav">
+      <div class="brand">
+        <div class="brand-logo">IT</div>
+        <div>
+          <div class="brand-text-main">Darwin IT Mate</div>
+          <div class="brand-text-sub">Local IT & cyber help · by Joseph</div>
+        </div>
+      </div>
+      <div class="nav-links">
+        <a href="#home-wrapper">Home</a>
+        <a href="#services-wrapper">Services</a>
+        <a href="#contact-wrapper">Contact</a>
+        <button class="nav-cta" onclick="document.getElementById('contact-wrapper').scrollIntoView({behavior:'smooth'})">
+          Book
+        </button>
+      </div>
+    </header>
+
+    <section class="section-full fade-section">
+      <div class="section-inner">
+        <div class="page-title">CONTACT</div>
+
+        <div class="section-heading">
+          <h2 class="section-title">Get in touch</h2>
+          <p class="section-subtitle" style="color:#e5e7eb;">
+            No question is too small. Just tell me what you need help with — English or Chinese is welcome.
+          </p>
+        </div>
+
+        <div class="contact-layout">
+          <div class="contact-info">
+            <p>
+              I usually reply in the evenings or on weekends.  
+              I work mainly around Darwin and nearby suburbs, with remote help available when suitable.
+            </p>
+            <div class="contact-lines">
+              <div><strong>Phone / SMS:</strong> 0466 658 664</div>
+              <div><strong>Email:</strong> zzf0413@outlook.com</div>
+              <div><strong>Location:</strong> Darwin, Northern Territory</div>
+            </div>
+            <p style="font-size:13px; color:#e5e7eb;">
+              If you're not sure which service to choose, simply describe your situation in one or two sentences.
+              We can decide together what makes sense — and I will always explain the price clearly first.
+            </p>
+          </div>
+
+          <!-- Netlify 表单 -->
+          <form
+            name="contact"
+            method="POST"
+            data-netlify="true"
+          >
+            <input type="hidden" name="form-name" value="contact" />
+
+            <div class="field-group">
+              <label class="field-label" for="name">Your name</label>
+              <input class="field-input" id="name" type="text" name="name" required />
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="contact-method">Best way to contact you</label>
+              <input
+                class="field-input"
+                id="contact-method"
+                type="text"
+                name="contact-method"
+                placeholder="Phone, email, or both"
+                required
+              />
+            </div>
+
+            <div class="field-group">
+              <label class="field-label" for="message">What do you need help with?</label>
+              <textarea
+                class="field-textarea"
+                id="message"
+                name="message"
+                required
+              ></textarea>
+            </div>
+
+            <button class="btn-primary" type="submit">Send message →</button>
+          </form>
+        </div>
+
+        <div class="footer">
+          © <span id="year"></span> Darwin IT Mate · Joseph Chou
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script>
+  // 年份
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // 让每个 .fade-section 进入视口时淡入，离开时恢复为初始状态
+  const fades = document.querySelectorAll(".fade-section");
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+        } else {
+          entry.target.classList.remove("visible");
+        }
+      });
+    },
+    {
+      threshold: 0.2,          // 只要 20% 出现在屏幕里就触发
+      rootMargin: "0px 0px -10% 0px" // 底部预留一点，手机上更容易触发
+    }
+  );
+  fades.forEach((sec) => io.observe(sec));
+
+  // 首屏默认显示（避免初次加载时空白）
+  const first = document.getElementById("home-section");
+  if (first) first.classList.add("visible");
+</script>
+
+
+</body>
+</html>
