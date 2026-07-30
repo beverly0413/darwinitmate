@@ -18,6 +18,16 @@
 html { scroll-behavior: smooth; }
 body { margin: 0; min-width: 320px; min-height: 100vh; color: var(--ink); background: var(--paper); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
 .cursor-trail { position:fixed; inset:0; z-index:9999; pointer-events:none; mix-blend-mode:screen; }
+.has-custom-cursor, .has-custom-cursor * { cursor:none !important; }
+.tech-cursor-dot, .tech-cursor-ring { position:fixed; top:0; left:0; z-index:10001; pointer-events:none; border-radius:50%; will-change:transform; transition:opacity .18s ease; }
+.tech-cursor-dot { width:6px; height:6px; margin:-3px 0 0 -3px; background:#7ee9ff; box-shadow:0 0 8px #33c8ff, 0 0 18px rgba(37,99,235,.9); }
+.tech-cursor-ring { width:30px; height:30px; margin:-15px 0 0 -15px; border:1px solid rgba(61,214,255,.78); background:rgba(37,99,235,.05); box-shadow:0 0 18px rgba(37,99,235,.24), inset 0 0 10px rgba(61,214,255,.1); transition:width .2s ease,height .2s ease,margin .2s ease,border-color .2s ease,background .2s ease,opacity .18s ease; }
+.tech-cursor-ring::before, .tech-cursor-ring::after { content:""; position:absolute; background:#7ee9ff; opacity:.8; }
+.tech-cursor-ring::before { width:6px; height:1px; left:-4px; top:14px; }
+.tech-cursor-ring::after { width:1px; height:6px; left:14px; top:-4px; }
+.tech-cursor-ring.is-interactive { width:46px; height:46px; margin:-23px 0 0 -23px; border-color:rgba(37,99,235,.9); background:rgba(37,99,235,.12); }
+.tech-cursor-ring.is-pressed { width:22px; height:22px; margin:-11px 0 0 -11px; background:rgba(61,214,255,.22); }
+.tech-cursor-dot.is-hidden, .tech-cursor-ring.is-hidden { opacity:0; }
 button, input, textarea, select { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 a { color: inherit; text-decoration: none; }
@@ -57,7 +67,8 @@ h1 em, h2 em { font-weight: 600; font-style: normal; }
 .price-card.premium { border-color:rgba(37,99,235,.65); box-shadow:0 22px 60px rgba(8,26,47,.11); background:linear-gradient(145deg,#fff 0%,#f0f6ff 100%); }
 
 @media (pointer: coarse), (prefers-reduced-motion: reduce) {
-  .cursor-trail { display:none; }
+  .cursor-trail, .tech-cursor-dot, .tech-cursor-ring { display:none; }
+  .has-custom-cursor, .has-custom-cursor * { cursor:auto !important; }
 }
 
 .hero { min-height: 665px; display:grid; grid-template-columns: 49% 51%; background:var(--cream); }

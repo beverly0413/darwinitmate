@@ -46,17 +46,25 @@ async function sendEnquiry({ name = "", email = "", service = "General enquiry",
 
 function CursorTrail() {
   const canvasRef = useRef(null);
+  const dotRef = useRef(null);
+  const ringRef = useRef(null);
 
   useEffect(() => {
     const canvas = canvasRef.current;
+    const dot = dotRef.current;
+    const ring = ringRef.current;
     const finePointer = window.matchMedia("(pointer: fine)");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    if (!canvas || !finePointer.matches || reducedMotion.matches) return undefined;
+    if (!canvas || !dot || !ring || !finePointer.matches || reducedMotion.matches) return undefined;
 
     const context = canvas.getContext("2d");
     const points = [];
     let frame;
     let lastPoint = 0;
+    let mouseX = -100;
+    let mouseY = -100;
+    let ringX = -100;
+    let ringY = -100;
 
     const resize = () => {
       const ratio = Math.min(window.devicePixelRatio || 1, 2);
@@ -69,6 +77,13 @@ function CursorTrail() {
 
     const addPoint = event => {
       const now = performance.now();
+      mouseX = event.clientX;
+      mouseY = event.clientY;
+      dot.classList.remove("is-hidden");
+      ring.classList.remove("is-hidden");
+      dot.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
+      const interactive = event.target.closest("a, button, input, textarea, select, [role='button']");
+      ring.classList.toggle("is-interactive", Boolean(interactive));
       if (now - lastPoint < 12) return;
       points.push({ x: event.clientX, y: event.clientY, life: 1, size: 2 + Math.random() * 2 });
       if (points.length > 26) points.shift();
@@ -77,6 +92,9 @@ function CursorTrail() {
 
     const draw = () => {
       context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      ringX += (mouseX - ringX) * .18;
+      ringY += (mouseY - ringY) * .18;
+      ring.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
       points.forEach((point, index) => {
         point.life -= 0.032;
         if (point.life <= 0) return;
@@ -103,17 +121,41 @@ function CursorTrail() {
     };
 
     resize();
+    document.documentElement.classList.add("has-custom-cursor");
+    const hideCursor = () => {
+      dot.classList.add("is-hidden");
+      ring.classList.add("is-hidden");
+    };
+    const showCursor = () => {
+      dot.classList.remove("is-hidden");
+      ring.classList.remove("is-hidden");
+    };
+    const pressCursor = () => ring.classList.add("is-pressed");
+    const releaseCursor = () => ring.classList.remove("is-pressed");
     window.addEventListener("resize", resize);
     window.addEventListener("pointermove", addPoint, { passive: true });
+    document.addEventListener("pointerleave", hideCursor);
+    document.addEventListener("pointerenter", showCursor);
+    document.addEventListener("pointerdown", pressCursor);
+    document.addEventListener("pointerup", releaseCursor);
     frame = requestAnimationFrame(draw);
     return () => {
+      document.documentElement.classList.remove("has-custom-cursor");
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointermove", addPoint);
+      document.removeEventListener("pointerleave", hideCursor);
+      document.removeEventListener("pointerenter", showCursor);
+      document.removeEventListener("pointerdown", pressCursor);
+      document.removeEventListener("pointerup", releaseCursor);
       cancelAnimationFrame(frame);
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="cursor-trail" aria-hidden="true" />;
+  return <>
+    <canvas ref={canvasRef} className="cursor-trail" aria-hidden="true" />
+    <span ref={ringRef} className="tech-cursor-ring is-hidden" aria-hidden="true" />
+    <span ref={dotRef} className="tech-cursor-dot is-hidden" aria-hidden="true" />
+  </>;
 }
 
 function ScrollTop() {
