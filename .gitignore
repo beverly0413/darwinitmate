@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .vercel/
+.env*
 *.log
 audit-evidence/
 design-qa-comparison.png
@@ -8,4 +9,3 @@ implementation-desktop-hero.png
 implementation-home.png
 implementation-mobile.png
 logo-implementation-preview.png
-
