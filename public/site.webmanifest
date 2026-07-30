@@ -1,0 +1,21 @@
+{
+  "name": "Darwin IT Mate",
+  "short_name": "Darwin IT Mate",
+  "description": "Professional websites and local IT support across the Northern Territory.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8fafc",
+  "theme_color": "#071d33",
+  "icons": [
+    {
+      "src": "/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/images/darwin-it-mate-icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
