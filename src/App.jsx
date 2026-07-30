@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BrowserRouter, Link, NavLink, Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -42,6 +42,78 @@ async function sendEnquiry({ name = "", email = "", service = "General enquiry",
     throw new Error(result.message || "The enquiry could not be sent.");
   }
   return result;
+}
+
+function CursorTrail() {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const finePointer = window.matchMedia("(pointer: fine)");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    if (!canvas || !finePointer.matches || reducedMotion.matches) return undefined;
+
+    const context = canvas.getContext("2d");
+    const points = [];
+    let frame;
+    let lastPoint = 0;
+
+    const resize = () => {
+      const ratio = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = window.innerWidth * ratio;
+      canvas.height = window.innerHeight * ratio;
+      canvas.style.width = `${window.innerWidth}px`;
+      canvas.style.height = `${window.innerHeight}px`;
+      context.setTransform(ratio, 0, 0, ratio, 0, 0);
+    };
+
+    const addPoint = event => {
+      const now = performance.now();
+      if (now - lastPoint < 12) return;
+      points.push({ x: event.clientX, y: event.clientY, life: 1, size: 2 + Math.random() * 2 });
+      if (points.length > 26) points.shift();
+      lastPoint = now;
+    };
+
+    const draw = () => {
+      context.clearRect(0, 0, window.innerWidth, window.innerHeight);
+      points.forEach((point, index) => {
+        point.life -= 0.032;
+        if (point.life <= 0) return;
+        const previous = points[index - 1];
+        if (previous) {
+          context.beginPath();
+          context.moveTo(previous.x, previous.y);
+          context.lineTo(point.x, point.y);
+          context.strokeStyle = `rgba(37, 99, 235, ${point.life * .18})`;
+          context.lineWidth = Math.max(.5, point.life * 1.4);
+          context.stroke();
+        }
+        const glow = context.createRadialGradient(point.x, point.y, 0, point.x, point.y, 14);
+        glow.addColorStop(0, `rgba(61, 214, 255, ${point.life * .72})`);
+        glow.addColorStop(.3, `rgba(37, 99, 235, ${point.life * .3})`);
+        glow.addColorStop(1, "rgba(37, 99, 235, 0)");
+        context.fillStyle = glow;
+        context.beginPath();
+        context.arc(point.x, point.y, 14, 0, Math.PI * 2);
+        context.fill();
+      });
+      while (points[0]?.life <= 0) points.shift();
+      frame = requestAnimationFrame(draw);
+    };
+
+    resize();
+    window.addEventListener("resize", resize);
+    window.addEventListener("pointermove", addPoint, { passive: true });
+    frame = requestAnimationFrame(draw);
+    return () => {
+      window.removeEventListener("resize", resize);
+      window.removeEventListener("pointermove", addPoint);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return <canvas ref={canvasRef} className="cursor-trail" aria-hidden="true" />;
 }
 
 function ScrollTop() {
@@ -264,8 +336,8 @@ function PageHero({ eyebrow, title, italic, copy, action, children }) {
 function WebDesign({ openQuote }) {
   const navigate = useNavigate();
   return <main>
-    <PageHero eyebrow="WEB DESIGN / FROM $150" title="A sharper online presence." italic="Without the agency fuss."
-      copy="Purposeful, responsive websites for Darwin businesses that want to look credible and make it easy for customers to get in touch."
+    <PageHero eyebrow="PROFESSIONAL WEBSITE / $150 AUD" title="The complete professional build." italic="Without the $300 price tag."
+      copy="The same core deliverables businesses commonly expect from a $300 website package — strategic structure, custom styling, responsive development, SEO foundations and a direct enquiry system."
       action={<button className="btn btn-primary" onClick={openQuote}>Build my website <ArrowRight /></button>}>
       <img src="/images/web-design-showcase.png" alt="Website design presented on a laptop" />
     </PageHero>
@@ -275,10 +347,11 @@ function WebDesign({ openQuote }) {
         <Reveal className="feature-item" delay={i * .07} key={t}><Icon /><h3>{t}</h3><p>{c}</p></Reveal>)}
     </section>
     <section className="package-section">
-      <Reveal><p className="eyebrow">STARTER WEBSITE</p><h2>Everything you need<br />to get online.</h2><p className="big-price">$150 <small>AUD</small></p></Reveal>
+      <Reveal><p className="eyebrow">PROFESSIONAL LAUNCH PACKAGE</p><h2>$300-level essentials.<br />Darwin price: $150.</h2><p className="big-price">$150 <small>AUD · ONE-OFF</small></p><p className="package-value">No cut-down template. No hidden design fee. A complete, professionally finished business website.</p></Reveal>
       <Reveal className="package-card" delay={.1}>
-        {["A polished one-page website", "Mobile and tablet responsive", "Contact form and map", "Basic on-page SEO", "Performance optimisation", "Launch and handover support"].map(x => <div key={x}><CheckCircle weight="fill" />{x}</div>)}
-        <button className="btn btn-primary" onClick={openQuote}>Start with the $150 package <ArrowRight /></button>
+        <span className="package-badge">FULL PROFESSIONAL PACKAGE</span>
+        {["Custom-designed, conversion-focused landing page", "Responsive across mobile, tablet and desktop", "Direct-to-email enquiry form and Google Map", "On-page SEO, metadata and local search foundations", "Speed, image and performance optimisation", "Social links, click-to-call and clear customer actions", "Domain connection, launch and personal handover", "Two rounds of design refinements"].map(x => <div key={x}><CheckCircle weight="fill" />{x}</div>)}
+        <button className="btn btn-primary" onClick={openQuote}>Claim the $150 professional build <ArrowRight /></button>
         <p>Need more pages, booking, e-commerce or custom functionality? We’ll quote it clearly before we begin.</p>
       </Reveal>
     </section>
@@ -311,14 +384,14 @@ function ITSupport() {
 
 function Pricing({ openQuote }) {
   const plans = [
-    { name: "Starter", price: "$150", tag: "A focused launch package for a clear, credible online presence", items: ["One polished page", "Responsive design", "Email enquiry form", "Basic SEO", "Launch support"] },
+    { name: "Professional Launch", price: "$150", tag: "A complete professional website package with the core value commonly found in $300 offers", premium: true, badge: "BEST VALUE", items: ["Custom conversion-led design", "Responsive development", "Direct enquiry form + map", "SEO and performance setup", "Two refinement rounds", "Domain connection and launch"] },
     { name: "Business", price: "Custom", tag: "For businesses ready to grow", featured: true, items: ["Up to 5 tailored pages", "Custom page sections", "Advanced enquiry forms", "Local SEO setup", "Analytics and handover"] },
     { name: "IT Care", price: "$69/mo", tag: "Affordable ongoing help for homes and micro businesses", items: ["Remote help and guidance", "Remote computer setup $150", "On-site computer setup $220", "NT-wide service by arrangement", "Clear quote before work"] },
   ];
   return <main>
     <PageHero eyebrow="CLEAR PRICING" title="Start simple." italic="Scale when you need to." copy="No vague agency retainers or surprise add-ons. We confirm the scope and price before the work begins." />
-    <section className="pricing-grid">{plans.map((p, i) => <Reveal key={p.name} className={`price-card ${p.featured ? "featured" : ""}`} delay={i * .08}>
-      {p.featured && <span className="popular">MOST POPULAR</span>}<p className="eyebrow">{p.name}</p><h2>{p.price}</h2><p>{p.tag}</p><div>{p.items.map(x => <span key={x}><Check />{x}</span>)}</div><button className={`btn ${p.featured ? "btn-primary" : "btn-secondary"}`} onClick={openQuote}>Choose {p.name} <ArrowRight /></button>
+    <section className="pricing-grid">{plans.map((p, i) => <Reveal key={p.name} className={`price-card ${p.featured ? "featured" : ""} ${p.premium ? "premium" : ""}`} delay={i * .08}>
+      {(p.featured || p.premium) && <span className="popular">{p.badge || "MOST POPULAR"}</span>}<p className="eyebrow">{p.name}</p><h2>{p.price}</h2><p>{p.tag}</p><div>{p.items.map(x => <span key={x}><Check />{x}</span>)}</div><button className={`btn ${p.featured || p.premium ? "btn-primary" : "btn-secondary"}`} onClick={openQuote}>Choose {p.name} <ArrowRight /></button>
     </Reveal>)}</section>
     <p className="pricing-note">All prices are confirmed before work begins. Travel or accommodation charges may apply outside Darwin and will always be quoted first.</p>
     <Faq />
@@ -350,7 +423,7 @@ function Work({ openQuote }) {
 
 function Faq() {
   const qs = [
-    ["What does the $150 website include?", "A polished one-page website with responsive design, a contact form, basic on-page SEO and launch support. We’ll confirm the final scope before starting."],
+    ["What does the $150 website include?", "A complete professional one-page business website: custom styling, responsive development, a direct enquiry form, Google Map, click-to-call actions, on-page SEO, performance optimisation, domain connection, two refinement rounds and launch support."],
     ["How quickly can you build it?", "Most starter websites can be designed and launched within 5–7 business days once content and feedback are ready."],
     ["Do you offer on-site IT support?", "Yes. We provide on-site support across Darwin and remote support when the issue can be solved faster online."],
     ["Can you look after the website after launch?", "Absolutely. We can arrange updates, improvements and general support as your business grows."],
@@ -411,7 +484,7 @@ function Contact() {
 
 function Shell() {
   const [quote, setQuote] = useState(false);
-  return <><ScrollTop /><Header openQuote={() => setQuote(true)} /><Routes>
+  return <><CursorTrail /><ScrollTop /><Header openQuote={() => setQuote(true)} /><Routes>
     <Route path="/" element={<Home openQuote={() => setQuote(true)} />} />
     <Route path="/web-design" element={<WebDesign openQuote={() => setQuote(true)} />} />
     <Route path="/it-support" element={<ITSupport />} />

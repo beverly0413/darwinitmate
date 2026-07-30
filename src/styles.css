@@ -17,6 +17,7 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; min-width: 320px; min-height: 100vh; color: var(--ink); background: var(--paper); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+.cursor-trail { position:fixed; inset:0; z-index:9999; pointer-events:none; mix-blend-mode:screen; }
 button, input, textarea, select { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 a { color: inherit; text-decoration: none; }
@@ -51,6 +52,13 @@ h1 em, h2 em { font-weight: 600; font-style: normal; }
 .eyebrow.accent { color: var(--orange); }
 .eyebrow.light { color: #b9c5b6; }
 .centered { text-align:center; }
+.package-value { max-width:520px; color:var(--muted); line-height:1.7; }
+.package-badge { display:inline-flex; margin-bottom:12px; padding:7px 10px; background:rgba(37,99,235,.1); border:1px solid rgba(37,99,235,.24); color:var(--orange); font-size:10px; font-weight:800; letter-spacing:.12em; }
+.price-card.premium { border-color:rgba(37,99,235,.65); box-shadow:0 22px 60px rgba(8,26,47,.11); background:linear-gradient(145deg,#fff 0%,#f0f6ff 100%); }
+
+@media (pointer: coarse), (prefers-reduced-motion: reduce) {
+  .cursor-trail { display:none; }
+}
 
 .hero { min-height: 665px; display:grid; grid-template-columns: 49% 51%; background:var(--cream); }
 .hero-copy { padding: 88px 6vw 74px 8vw; align-self:center; }
