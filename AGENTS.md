@@ -12,5 +12,6 @@ When implementing from a selected generated mock, treat that image as the source
 - Use a high-contrast technology palette: deep navy, electric blue, cool white and restrained cyan.
 - Use modern technology-led sans-serif typography, minimal italics, restrained motion and documentary-style local service photography.
 - Core offers are websites from AUD $150 and friendly local IT support.
+- Work portfolio entries are interactive, runnable industry demo websites rather than static project screenshots.
 
 Build app UI in `src/`. Keep `.openai/hosting.json`, `worker/index.js`, `scripts/prepare-sites-build.mjs`, and `tests/sites-worker.test.mjs` intact so the same local prototype can be handed to Sites. Before a Sites handoff, run `npm run build` and `npm run test:sites`; the build must leave `dist/client/index.html`, `dist/server/index.js`, and `dist/.openai/hosting.json`.

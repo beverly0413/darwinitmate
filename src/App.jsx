@@ -6,6 +6,7 @@ import {
   DeviceMobile, GlobeHemisphereEast, List, MapPin, Monitor, ShieldCheck,
   Sparkle, Star, Wrench, X,
 } from "@phosphor-icons/react";
+import { CasePreview, CaseStudyDemo } from "./CaseStudyDemos";
 
 const EASE = [0.22, 1, 0.36, 1];
 const services = [
@@ -451,11 +452,11 @@ function Work({ openQuote }) {
     </section>
     <section className="portfolio-list">
       {caseStudies.map((item, i) => <Reveal className={`portfolio-case ${i % 2 ? "case-reverse" : ""}`} key={item.slug}>
-        <div className="case-visual"><img src={item.image} alt={`${item.name} responsive website project`} /><span className={`case-index ${item.accent}`}>0{i + 1}</span></div>
+        <Link to={`/work/${item.slug}`} className="case-visual" aria-label={`Open the ${item.name} interactive website demo`}><CasePreview slug={item.slug} /><span className={`case-index ${item.accent}`}>0{i + 1}</span><span className="open-demo">Open interactive website <ArrowUpRight /></span></Link>
         <div className="case-details">
           <p className="eyebrow">{item.industry}</p><h2>{item.name}</h2><p>{item.summary}</p>
           <dl><div><dt>FOCUS</dt><dd>{i === 0 ? "Brand, menu & bookings" : i === 1 ? "Local SEO & lead generation" : i === 2 ? "Accessibility & online booking" : "Credibility & consultation leads"}</dd></div><div><dt>OUTCOME</dt><dd>{item.result}</dd></div></dl>
-          <button className="text-link case-link" onClick={openQuote}>Build something like this <ArrowRight /></button>
+          <div className="case-actions"><Link className="text-link case-link" to={`/work/${item.slug}`}>Explore live demo <ArrowUpRight /></Link><button className="text-link case-link" onClick={openQuote}>Build something like this <ArrowRight /></button></div>
         </div>
       </Reveal>)}
     </section>
@@ -526,6 +527,9 @@ function Contact() {
 
 function Shell() {
   const [quote, setQuote] = useState(false);
+  const { pathname } = useLocation();
+  const demoSlug = pathname.startsWith("/work/") ? pathname.split("/")[2] : "";
+  if (demoSlug && caseStudies.some(item => item.slug === demoSlug)) return <><CursorTrail /><ScrollTop /><CaseStudyDemo slug={demoSlug} /></>;
   return <><CursorTrail /><ScrollTop /><Header openQuote={() => setQuote(true)} /><Routes>
     <Route path="/" element={<Home openQuote={() => setQuote(true)} />} />
     <Route path="/web-design" element={<WebDesign openQuote={() => setQuote(true)} />} />
